@@ -41,21 +41,21 @@ Failed:An empty date parameter should return the current time in a JSON object w
 */
 
 app.get("/api/:date_string?", function (req, res) {
-  let date = new Date(req.params.date_string) || req.params.date_string
-  
-  if(date === undefined){
-    res.json({unix: Date.now(), utc: new Date().toUTCString()})
+  let date =   req.params.date_string
+  if(!date){
+    const currentTime = new Date();
+    res.json({ unix: currentTime.getTime(), utc: currentTime.toUTCString() });
   }
-  else if(date.match(/\d{4}-\d{2}-\d{2}/)){
-    res.json({unix: new Date(date).getTime(), utc: new Date(date).toUTCString()})
-  }
-  else if (date.match(/\d{5,}/)){
-    res.json({unix: parseInt(date), utc: new Date(parseInt(date)).toUTCString()})
-  }
-  
   else{
-    res.json({error: "Invalid Date"})
+    let dateObj = new Date(date);
+    if(dateObj.toString() === "Invalid Date"){
+      res.json({ error: "Invalid Date" });
+    }
+    else{
+      res.json({ unix: dateObj.getTime(), utc: dateObj.toUTCString() });
+    }
   }
+
 })
  
 
