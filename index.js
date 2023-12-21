@@ -41,7 +41,8 @@ Failed:An empty date parameter should return the current time in a JSON object w
 */
 
 app.get("/api/:date_string?", function (req, res) {
-  let date = req.params.date_string
+  let date = new Date(req.params.date_string) || req.params.date_string
+  
   if(date === undefined){
     res.json({unix: Date.now(), utc: new Date().toUTCString()})
   }
@@ -51,6 +52,7 @@ app.get("/api/:date_string?", function (req, res) {
   else if (date.match(/\d{5,}/)){
     res.json({unix: parseInt(date), utc: new Date(parseInt(date)).toUTCString()})
   }
+  
   else{
     res.json({error: "Invalid Date"})
   }
